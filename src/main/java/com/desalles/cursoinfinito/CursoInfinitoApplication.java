@@ -1,5 +1,6 @@
 package com.desalles.cursoinfinito;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import com.desalles.cursoinfinito.domain.Cidade;
 import com.desalles.cursoinfinito.domain.Cliente;
 import com.desalles.cursoinfinito.domain.Endereco;
 import com.desalles.cursoinfinito.domain.Estado;
+import com.desalles.cursoinfinito.domain.Pagamento;
+import com.desalles.cursoinfinito.domain.PagamentoComBoleto;
+import com.desalles.cursoinfinito.domain.PagamentoComCartao;
+import com.desalles.cursoinfinito.domain.Pedido;
 import com.desalles.cursoinfinito.domain.Produto;
+import com.desalles.cursoinfinito.domain.enums.EstadoPagamento;
 import com.desalles.cursoinfinito.domain.enums.TipoCliente;
 import com.desalles.cursoinfinito.repositories.CategoriaRepository;
 import com.desalles.cursoinfinito.repositories.CidadeRepository;
 import com.desalles.cursoinfinito.repositories.ClienteRepository;
 import com.desalles.cursoinfinito.repositories.EnderecoRepository;
 import com.desalles.cursoinfinito.repositories.EstadoRepository;
+import com.desalles.cursoinfinito.repositories.PagamentoRepository;
+import com.desalles.cursoinfinito.repositories.PedidoRepository;
 import com.desalles.cursoinfinito.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -36,6 +44,10 @@ public class CursoInfinitoApplication implements CommandLineRunner {
 	private ClienteRepository clienteRepository;
 	@Autowired
 	private EnderecoRepository enderecoRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursoInfinitoApplication.class, args);
@@ -76,6 +88,18 @@ public class CursoInfinitoApplication implements CommandLineRunner {
 		
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32") , cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pagto2);
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
 		
 		/*
 		 * categoriaRepository.save(Arrays.asList(cat1, cat2));
@@ -89,6 +113,9 @@ public class CursoInfinitoApplication implements CommandLineRunner {
 		cidadeRepository.saveAll(Arrays.asList(c1, c2, c3));
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
+		
 		
 	}
 
