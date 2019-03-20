@@ -13,6 +13,7 @@ import com.desalles.cursoinfinito.domain.Cidade;
 import com.desalles.cursoinfinito.domain.Cliente;
 import com.desalles.cursoinfinito.domain.Endereco;
 import com.desalles.cursoinfinito.domain.Estado;
+import com.desalles.cursoinfinito.domain.ItemPedido;
 import com.desalles.cursoinfinito.domain.Pagamento;
 import com.desalles.cursoinfinito.domain.PagamentoComBoleto;
 import com.desalles.cursoinfinito.domain.PagamentoComCartao;
@@ -25,6 +26,7 @@ import com.desalles.cursoinfinito.repositories.CidadeRepository;
 import com.desalles.cursoinfinito.repositories.ClienteRepository;
 import com.desalles.cursoinfinito.repositories.EnderecoRepository;
 import com.desalles.cursoinfinito.repositories.EstadoRepository;
+import com.desalles.cursoinfinito.repositories.ItemPedidoRepository;
 import com.desalles.cursoinfinito.repositories.PagamentoRepository;
 import com.desalles.cursoinfinito.repositories.PedidoRepository;
 import com.desalles.cursoinfinito.repositories.ProdutoRepository;
@@ -48,6 +50,8 @@ public class CursoInfinitoApplication implements CommandLineRunner {
 	private PedidoRepository pedidoRepository;
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
+	@Autowired
+	private ItemPedidoRepository itemPedidoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursoInfinitoApplication.class, args);
@@ -101,6 +105,18 @@ public class CursoInfinitoApplication implements CommandLineRunner {
 		
 		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
 		
+		ItemPedido ip1 = new ItemPedido(ped1, p1, 0.0, 1, 2000.0);
+		ItemPedido ip2 = new ItemPedido(ped1, p3, 0.0, 2, 80.0);
+		ItemPedido ip3 = new ItemPedido(ped2, p2, 100.0, 1, 800.0);
+		
+		ped1.getItens().addAll(Arrays.asList(ip1, ip2));
+		ped2.getItens().addAll(Arrays.asList(ip3));
+		
+		p1.getItens().addAll(Arrays.asList(ip1));
+		p2.getItens().addAll(Arrays.asList(ip3));
+		p3.getItens().addAll(Arrays.asList(ip2));
+		
+		
 		/*
 		 * categoriaRepository.save(Arrays.asList(cat1, cat2));
 		 * 
@@ -115,7 +131,7 @@ public class CursoInfinitoApplication implements CommandLineRunner {
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
 		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
 		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
-		
+		itemPedidoRepository.saveAll(Arrays.asList(ip1, ip2, ip3));
 		
 	}
 
